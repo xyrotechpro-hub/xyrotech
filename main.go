@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"errors"
 	"io/fs"
@@ -21,7 +22,8 @@ var assets embed.FS
 
 // App exposes the small set of system controls needed by the desktop UI.
 type App struct {
-	inputMu sync.Mutex
+	inputMu   sync.Mutex
+	mouseHeld bool
 }
 
 var defaultWindowWidth, defaultWindowHeight = 1380, 1000
@@ -49,6 +51,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	app := &App{}
 	err = wails.Run(&options.App{
 		Title:         "FacePointer",
 		Width:         defaultWindowWidth,
@@ -57,7 +60,8 @@ func main() {
 		MinHeight:     minWindowHeight,
 		DisableResize: false,
 		AssetServer:   &assetserver.Options{Assets: webAssets},
-		Bind:          []interface{}{&App{}},
+		Bind:          []interface{}{app},
+		OnShutdown:    app.onShutdown,
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -116,5 +120,34 @@ func (a *App) Action(action string) error {
 	}
 	a.inputMu.Lock()
 	defer a.inputMu.Unlock()
+	if action == "left-down" {
+		if a.mouseHeld {
+			return nil
+		}
+		if err := performAction(action); err != nil {
+			return err
+		}
+		a.mouseHeld = true
+		return nil
+	}
+	if action == "left-up" {
+		if !a.mouseHeld {
+			return nil
+		}
+		if err := performAction(action); err != nil {
+			return err
+		}
+		a.mouseHeld = false
+		return nil
+	}
 	return performAction(action)
+}
+
+func (a *App) onShutdown(context.Context) {
+	a.inputMu.Lock()
+	defer a.inputMu.Unlock()
+	if a.mouseHeld {
+		_ = performAction("left-up")
+		a.mouseHeld = false
+	}
 }
