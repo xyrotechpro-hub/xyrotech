@@ -1,0 +1,14 @@
+# Go build outputs
+*.exe
+*.dll
+*.test
+*.syso
+/build/
+/dist/
+/.buildcache/
+/.buildtmp/
+
+# Local editor and agent settings
+.vscode/
+.idea/
+.claude/
