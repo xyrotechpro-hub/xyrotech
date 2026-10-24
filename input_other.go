@@ -5,6 +5,7 @@ package main
 import "errors"
 
 func screenSize() (int, int)   { return 0, 0 }
+func virtualScreenBounds() (int, int, int, int) { return 0, 0, 0, 0 }
 func doubleClickInterval() int { return 500 }
 func moveCursor(int, int) error {
 	return errors.New("system pointer control is currently available on Windows")

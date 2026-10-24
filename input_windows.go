@@ -11,6 +11,10 @@ import (
 const (
 	smCXScreen     = 0
 	smCYScreen     = 1
+	smXVirtual     = 76
+	smYVirtual     = 77
+	smCXVirtual    = 78
+	smCYVirtual    = 79
 	mouseLeftDown  = 0x0002
 	mouseLeftUp    = 0x0004
 	mouseRightDown = 0x0008
@@ -35,6 +39,14 @@ func screenSize() (int, int) {
 	width, _, _ := getSystemMetrics.Call(smCXScreen)
 	height, _, _ := getSystemMetrics.Call(smCYScreen)
 	return int(width), int(height)
+}
+
+func virtualScreenBounds() (int, int, int, int) {
+	x, _, _ := getSystemMetrics.Call(smXVirtual)
+	y, _, _ := getSystemMetrics.Call(smYVirtual)
+	width, _, _ := getSystemMetrics.Call(smCXVirtual)
+	height, _, _ := getSystemMetrics.Call(smCYVirtual)
+	return int(int32(x)), int(int32(y)), int(int32(width)), int(int32(height))
 }
 
 func doubleClickInterval() int {

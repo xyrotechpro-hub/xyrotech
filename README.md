@@ -31,7 +31,7 @@ See [the tracking algorithm](docs/ALGORITHM.md) for details on cursor movement, 
 - By default, one deliberate two-eye blink sends a left click immediately to select the item under the pointer. Cursor movement pauses during the blink so the click stays on the item. A second blink within the Windows double-click interval opens it; the app also honors a longer interval configured in Windows. Point at This PC, a file, or a folder first.
 - The one-blink menu can also send a right click, hold/release drag, scroll up/down, or Tab. For drag, select **Start/stop drag**, blink once to hold the left button while moving your head, then blink again to release it. Pausing tracking also releases a held drag.
 - The window opens at a size based on the current display, its minimum size is constrained to fit smaller screens, and the layout stacks on narrower windows. Mini mode also stays within the display bounds. Use Tab or Ctrl+Tab from the two-blink menu if you want keyboard navigation instead.
-- Pointer movement and clicks work across the Windows desktop, including File Explorer. Adjust pointer range and smoothing in the control panel.
+- Pointer movement and clicks work across the Windows desktop, including File Explorer and the combined virtual area of connected monitors. Adjust pointer range and smoothing in the control panel.
 - Gesture choices, blink sensitivity, pointer range, and smoothing are saved locally for the next launch.
 - The most recently selected camera is remembered when its device is still available.
 - Select **Restore default controls** to clear saved settings and return to the default click and pointer values.

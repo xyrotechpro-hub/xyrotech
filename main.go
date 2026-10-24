@@ -85,8 +85,11 @@ func enableBackgroundTracking() error {
 // GetStatus returns the desktop screen size for the pointer display.
 func (a *App) GetStatus() map[string]any {
 	width, height := screenSize()
+	virtualX, virtualY, virtualWidth, virtualHeight := virtualScreenBounds()
 	return map[string]any{
 		"name": "FacePointer", "screenWidth": width, "screenHeight": height,
+		"virtualX": virtualX, "virtualY": virtualY,
+		"virtualWidth": virtualWidth, "virtualHeight": virtualHeight,
 		"windowWidth": defaultWindowWidth, "windowHeight": defaultWindowHeight,
 		"doubleClickTime": doubleClickInterval(), "platform": runtime.GOOS,
 	}
@@ -97,13 +100,13 @@ func (a *App) Move(x, y float64) error {
 	if math.IsNaN(x) || math.IsNaN(y) || math.IsInf(x, 0) || math.IsInf(y, 0) || x < 0 || x > 1 || y < 0 || y > 1 {
 		return errors.New("cursor coordinates must be between 0 and 1")
 	}
-	width, height := screenSize()
+	left, top, width, height := virtualScreenBounds()
 	if width < 1 || height < 1 {
 		return errors.New("could not read the display size")
 	}
 	a.inputMu.Lock()
 	defer a.inputMu.Unlock()
-	return moveCursor(int(math.Round(x*float64(width-1))), int(math.Round(y*float64(height-1))))
+	return moveCursor(left+int(math.Round(x*float64(width-1))), top+int(math.Round(y*float64(height-1))))
 }
 
 // Action performs a supported mouse or keyboard action.
