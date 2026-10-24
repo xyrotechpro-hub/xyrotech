@@ -64,6 +64,7 @@
           <div class="range-block"><div class="range-line"><span>Pointer range</span><span id="rangeValue">5.0×</span></div><input class="range" type="range" id="rangeSlider" min="1.2" max="7.0" step="0.1" value="5.0" aria-label="Pointer range"><div class="hint">Increase range to reach desktop icons with smaller head movements.</div></div>
           <div class="range-block"><div class="range-line"><span>Pointer smoothing</span><span id="smoothValue">15%</span></div><input class="range" type="range" id="smoothSlider" min="15" max="80" step="5" value="15" aria-label="Pointer smoothing"><div class="hint">Higher smoothing reduces jitter and makes movement steadier.</div></div>
           <button class="secondary calibrate" id="calibrateButton" disabled><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6.5" stroke="currentColor" stroke-width="1.4"/><circle cx="10" cy="10" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M10 1v3m0 12v3M1 10h3m12 0h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Calibrate neutral position</button>
+          <button class="secondary" id="resetPreferencesButton" style="width:100%;margin-top:9px">Restore default controls</button>
         </article>
         <article class="card help-card"><div class="section-label">Quick setup</div><div class="steps"><div class="step"><div class="step-num">1</div><div><strong>Connect your camera</strong><span>Allow access if Windows asks. Choose a camera if you have more than one.</span></div></div><div class="step"><div class="step-num">2</div><div><strong>Find a comfortable position</strong><span>Keep your face centered and evenly lit. Calibrate while looking straight ahead.</span></div></div><div class="step"><div class="step-num">3</div><div><strong>Start pointer tracking</strong><span>Move your head to guide the pointer. Blink once to click or twice to use your chosen action.</span></div></div></div><div class="privacy-note"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2.5 4 5v4.3c0 4 2.5 6.8 6 8.2 3.5-1.4 6-4.2 6-8.2V5l-6-2.5Z" stroke="currentColor" stroke-width="1.5"/><path d="m7.5 10 1.7 1.7 3.5-3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Camera frames and face landmarks are processed on this device. Only pointer coordinates and actions go to the local Go app. MediaPipe may send service usage metrics to Google.</span></div></article>
         <p class="hint">Face detection runs on this device. MediaPipe may send service usage metrics to Google. <a href="https://developers.google.com/edge/mediapipe/solutions/tasks#mediapipe_tasks_privacy_notice" target="_blank" rel="noreferrer" style="color:#a8d6c9">Privacy notice</a></p>
@@ -322,6 +323,14 @@
     $('calibrateButton').addEventListener('click',()=>{state.center=null;state.smoothed=null;toast('Neutral position set. Keep looking straight ahead.');});
     restorePreferences();
     for(const id of ['singleAction','doubleAction','blinkSensitivity','rangeSlider','smoothSlider'])$(id).addEventListener('change',savePreferences);
+    $('resetPreferencesButton').addEventListener('click',()=>{
+      for(const [id,value] of Object.entries({singleAction:'left',doubleAction:'double-left',blinkSensitivity:'75',rangeSlider:'5',smoothSlider:'15'}))$(id).value=value;
+      try{localStorage.removeItem('facepointer.preferences.v1');}catch(_){ }
+      $('rangeValue').textContent=`${Number($('rangeSlider').value).toFixed(1)}×`;
+      $('smoothValue').textContent=`${$('smoothSlider').value}%`;
+      $('blinkSensitivityValue').textContent=`${$('blinkSensitivity').value}%`;
+      toast('Default controls restored.');
+    });
     $('rangeSlider').addEventListener('input',e=>$('rangeValue').textContent=`${Number(e.target.value).toFixed(1)}×`);
     $('smoothSlider').addEventListener('input',e=>$('smoothValue').textContent=`${e.target.value}%`);
     $('blinkSensitivity').addEventListener('input',e=>$('blinkSensitivityValue').textContent=`${e.target.value}%`);

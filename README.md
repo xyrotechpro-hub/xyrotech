@@ -33,6 +33,7 @@ See [the tracking algorithm](docs/ALGORITHM.md) for details on cursor movement, 
 - The window opens at a size based on the current display, its minimum size is constrained to fit smaller screens, and the layout stacks on narrower windows. Mini mode also stays within the display bounds. Use Tab or Ctrl+Tab from the two-blink menu if you want keyboard navigation instead.
 - Pointer movement and clicks work across the Windows desktop, including File Explorer. Adjust pointer range and smoothing in the control panel.
 - Gesture choices, blink sensitivity, pointer range, and smoothing are saved locally for the next launch.
+- Select **Restore default controls** to clear saved settings and return to the default click and pointer values.
 - Use **Desktop mini mode** to keep a small tracking window in a screen corner while working with other desktop apps. Keep this mini window visible instead of minimizing it so camera tracking continues. The frame loop uses a timer so it does not depend on visible-window animation frames.
 - Press **Space** to pause or resume tracking, or **Escape** to pause.
 
