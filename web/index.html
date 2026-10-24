@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <link rel="icon" href="facepointer.svg" type="image/svg+xml">
+  <title>FacePointer — hands-free control</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1020;--panel:#11182b;--panel2:#151e34;--line:#26334f;--text:#eef3ff;--muted:#99a8c4;--mint:#63e6c1;--blue:#83a8ff;--amber:#ffc978;--red:#ff7e8c;--radius:18px;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 70% -10%,#1d2e50 0,transparent 38%),var(--bg);color:var(--text)}button,select,input{font:inherit}button{cursor:pointer;color:inherit}.shell{max-width:1240px;padding:26px 30px 44px;margin:auto}.topbar{height:56px;display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}.brand{display:flex;gap:12px;align-items:center;font-weight:750;letter-spacing:.02em}.brandmark{height:38px;width:38px;border-radius:12px;background:linear-gradient(145deg,#65e9c6,#5d9dff);display:grid;place-items:center;color:#07151a;box-shadow:0 8px 24px #41cba632}.brandmark svg{width:21px}.brand small{display:block;color:var(--muted);font-size:11px;font-weight:550;letter-spacing:.13em;margin-top:2px}.topright{display:flex;align-items:center;gap:12px}.status-pill,.privacy{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#121a2b;padding:9px 12px;border-radius:99px;color:var(--muted);font-size:12px}.dot{height:8px;width:8px;border-radius:100%;background:#74809a}.status-pill.ready .dot{background:var(--mint);box-shadow:0 0 12px #63e6c1aa}.status-pill.active .dot{background:#63e6c1;box-shadow:0 0 12px #63e6c1}.privacy svg{width:14px;color:var(--mint)}.intro{margin-bottom:22px}.eyebrow{color:var(--mint);font-size:11px;letter-spacing:.17em;font-weight:750;text-transform:uppercase}.intro h1{font-size:clamp(25px,3vw,34px);letter-spacing:-.035em;margin:8px 0 6px}.intro p{color:var(--muted);font-size:14px;margin:0;max-width:690px;line-height:1.55}.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(310px,.95fr);gap:18px}.card{background:linear-gradient(155deg,#141d31,#101728);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 12px 40px #03061140}.camera-card{overflow:hidden}.card-head{display:flex;align-items:center;justify-content:space-between;padding:17px 19px 14px}.title{font-size:14px;font-weight:700}.sub{font-size:11px;color:var(--muted);margin-top:4px}.camera-wrap{position:relative;margin:0 14px;border-radius:13px;overflow:hidden;aspect-ratio:16/9;background:radial-gradient(ellipse at center,#1a2841,#0a0e1a 72%);border:1px solid #26344e}.camera-wrap video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:none}.camera-wrap video.show{display:block}.camera-placeholder{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px}.placeholder-content{max-width:300px}.cam-icon{width:54px;height:54px;border:1px solid #324260;border-radius:17px;margin:0 auto 13px;display:grid;place-items:center;background:#16213a;color:#88a7da}.cam-icon svg{width:24px}.camera-placeholder strong{display:block;font-size:14px}.camera-placeholder span{display:block;color:var(--muted);font-size:12px;line-height:1.5;margin-top:6px}.live-tag{position:absolute;top:12px;left:12px;background:#080e1bbd;border:1px solid #ffffff24;border-radius:7px;padding:6px 8px;font-size:10px;letter-spacing:.1em;color:#eaf1ff;display:none;align-items:center;gap:6px}.live-tag.show{display:flex}.live-tag i{width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red)}.tracking-overlay{position:absolute;right:12px;top:12px;background:#080e1bbd;border:1px solid #ffffff24;border-radius:7px;padding:6px 9px;color:#c9d8ed;font-size:10px;display:none}.tracking-overlay.show{display:block}.cam-controls{display:flex;align-items:center;gap:9px;padding:14px}.primary,.secondary{border:0;border-radius:10px;padding:11px 15px;font-size:12px;font-weight:700;transition:transform .15s,filter .15s}.primary{background:var(--mint);color:#08201b;box-shadow:0 5px 17px #45d4ae2b}.primary:hover{filter:brightness(1.08);transform:translateY(-1px)}.secondary{background:#202b43;border:1px solid #32415f;color:#e8efff}.secondary:hover{background:#283652}.secondary:disabled{opacity:.45;cursor:not-allowed}.button-icon{display:inline-block;margin-right:7px}.cam-select{margin-left:auto;background:#111a2c;border:1px solid var(--line);color:#cad6e9;border-radius:9px;padding:9px 10px;max-width:190px;font-size:11px}.side-stack{display:flex;flex-direction:column;gap:18px}.control-card{padding:18px 18px 17px}.section-label{font-size:11px;color:#aab9d2;font-weight:750;letter-spacing:.11em;text-transform:uppercase;margin-bottom:15px}.track-row{display:flex;align-items:center;justify-content:space-between;gap:14px}.track-row h2{font-size:17px;margin:0 0 5px}.track-row p{font-size:11px;line-height:1.5;color:var(--muted);margin:0}.toggle{position:relative;width:46px;height:26px;flex:none}.toggle input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}.toggle span{position:absolute;inset:0;border-radius:99px;background:#2b3650;transition:.2s;pointer-events:none}.toggle span:after{content:"";position:absolute;width:18px;height:18px;left:4px;top:4px;border-radius:50%;background:#aab5c8;transition:.2s}.toggle input:checked+span{background:#249d83}.toggle input:checked+span:after{transform:translateX(20px);background:#e6fff8}.toggle input:focus-visible+span{outline:2px solid var(--blue);outline-offset:3px}.divider{height:1px;background:var(--line);margin:17px 0}.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{padding:11px 12px;border-radius:10px;background:#0e1627;border:1px solid #202c44}.metric-label{font-size:10px;color:var(--muted)}.metric-value{font-size:16px;font-weight:700;margin-top:5px;font-variant-numeric:tabular-nums}.metric-value.good{color:var(--mint)}.gesture-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;margin-top:12px}.gesture-copy{font-size:12px;font-weight:600}.gesture-copy small{display:block;color:var(--muted);font-size:10px;font-weight:450;margin-top:4px}.select-wrap select{appearance:none;color:#dce6f7;background:#101a2c;border:1px solid #2b3a57;border-radius:8px;padding:8px 30px 8px 10px;font-size:11px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='m2 3 3 3 3-3' fill='none' stroke='%2399a8c4' stroke-width='1.4'/%3E%3C/svg%3E");background-position:right 10px center;background-repeat:no-repeat}.range-block{margin-top:17px}.range-line{display:flex;justify-content:space-between;color:#dce6f7;font-size:11px;margin-bottom:9px}.range-line span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}.range{width:100%;height:4px;appearance:none;background:linear-gradient(90deg,var(--mint),#3c526d);border-radius:10px;outline:none}.range::-webkit-slider-thumb{appearance:none;height:14px;width:14px;border-radius:100%;background:#e5fff9;border:3px solid #3acbaa;box-shadow:0 1px 7px #0009}.range::-moz-range-thumb{height:10px;width:10px;border-radius:100%;background:#e5fff9;border:3px solid #3acbaa}.hint{font-size:10px;color:#8292ad;line-height:1.5;margin-top:9px}.calibrate{width:100%;display:flex;justify-content:center;align-items:center;gap:8px;margin-top:14px}.calibrate svg{width:14px}.help-card{padding:17px 18px}.steps{display:grid;gap:12px}.step{display:grid;grid-template-columns:25px 1fr;gap:10px;align-items:start}.step-num{width:24px;height:24px;border-radius:8px;background:#1c2940;color:#98b8ff;display:grid;place-items:center;font-size:11px;font-weight:750}.step strong{font-size:11px;display:block;margin:2px 0 4px}.step span{color:var(--muted);font-size:10px;line-height:1.5;display:block}.privacy-note{margin-top:16px;padding:11px 12px;border:1px solid #29433f;background:#10231f;border-radius:10px;color:#a8d6c9;font-size:10px;line-height:1.5;display:flex;gap:8px}.privacy-note svg{width:14px;flex:none;color:var(--mint);margin-top:1px}.foot{display:flex;justify-content:space-between;color:#7584a0;font-size:10px;padding:20px 3px 0}.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,12px);background:#1c2940;border:1px solid #3a4b6b;color:#f0f5ff;padding:11px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.2s;box-shadow:0 12px 40px #0008;font-size:12px;z-index:3}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:820px){.layout{grid-template-columns:1fr}.side-stack{display:grid;grid-template-columns:1fr 1fr}.shell{padding:20px 18px 32px}}
+    @media(max-width:560px){.shell{padding:15px 13px 26px}.privacy{display:none}.side-stack{display:flex}.topbar{margin-bottom:22px}.cam-controls{flex-wrap:wrap}.cam-select{order:3;width:100%;max-width:none;margin:0}.foot{gap:12px;flex-direction:column}.status-pill{font-size:10px}}
+  </style>
+  <style>
+    .shell{max-width:1500px}
+    .layout{grid-template-columns:minmax(0,1.75fr) minmax(300px,.9fr)}
+    .camera-wrap{aspect-ratio:4/3}
+    body.mini-mode .shell{max-width:none;padding:8px}
+    body.mini-mode .intro,body.mini-mode .side-stack,body.mini-mode .foot{display:none}
+    body.mini-mode .topbar{height:34px;margin-bottom:8px}
+    body.mini-mode .brandmark{height:30px;width:30px}
+    body.mini-mode .brand small,body.mini-mode .privacy{display:none}
+    body.mini-mode .layout{display:block}
+    body.mini-mode .card-head{padding:8px 10px}
+    body.mini-mode .camera-wrap{margin:0 8px;border-radius:8px;aspect-ratio:16/9}
+    body.mini-mode .cam-controls{padding:8px;gap:6px}
+    body.mini-mode .primary,body.mini-mode .secondary{padding:8px 10px}
+    @media(max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}.side-stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:620px){.shell{padding:14px 12px 24px}.layout{grid-template-columns:minmax(0,1fr)}.side-stack{display:flex}.topbar{height:auto;min-height:44px;margin-bottom:18px;gap:8px}.topright{gap:6px}.cam-controls{flex-wrap:wrap}.cam-select{order:3;width:100%;max-width:none;margin:0}.gesture-row{grid-template-columns:minmax(0,1fr)}.select-wrap select{width:100%}.foot{gap:10px;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="brandmark" aria-hidden="true"><img src="facepointer.svg" alt="" style="width:24px;height:24px"></div><div>FACEPOINTER<small>HANDS-FREE CONTROL</small></div></div>
+      <div class="topright"><div class="privacy"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2.5 4 5v4.3c0 4 2.5 6.8 6 8.2 3.5-1.4 6-4.2 6-8.2V5l-6-2.5Z" stroke="currentColor" stroke-width="1.5"/><path d="m7.5 10 1.7 1.7 3.5-3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Video stays on this device</div><div class="status-pill" id="statusPill"><i class="dot"></i><span id="statusText">Camera disconnected</span></div></div>
+    </header>
+
+    <section class="intro"><div class="eyebrow">Accessible pointer · Windows desktop</div><h1>Move naturally. Click with a blink.</h1><p>FacePointer follows your head movement and turns deliberate blinks into mouse actions. Face tracking runs on this device.</p></section>
+
+    <section class="layout">
+      <article class="card camera-card">
+        <div class="card-head"><div><div class="title">Camera preview</div><div class="sub" id="cameraSub">Connect a camera to begin setup</div></div><div class="sub" id="fpsLabel">— FPS</div></div>
+        <div class="camera-wrap" id="cameraWrap">
+          <video id="video" autoplay playsinline muted></video>
+          <div class="camera-placeholder" id="placeholder"><div class="placeholder-content"><div class="cam-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="13" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="m16 10 5-3v10l-5-3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div><strong>Your camera preview will appear here</strong><span>Connect your webcam and allow camera access to start face tracking.</span></div></div>
+          <div class="live-tag" id="liveTag"><i></i>LIVE · ON-DEVICE</div><div class="tracking-overlay" id="trackingOverlay">TRACKING PAUSED</div>
+        </div>
+        <div class="cam-controls"><button class="primary" id="cameraButton"><span class="button-icon">◉</span>Connect camera</button><button class="secondary" id="trackingButton" disabled>Start tracking</button><button class="secondary" id="miniModeButton" aria-pressed="false">Desktop mini mode</button><select class="cam-select" id="cameraSelect" aria-label="Select camera" hidden></select></div>
+      </article>
+
+      <div class="side-stack">
+        <article class="card control-card">
+          <div class="section-label">Pointer control</div>
+          <div class="track-row"><div><h2 id="trackingTitle">Ready when you are</h2><p id="trackingDescription">Connect a camera, then start tracking when you’re comfortable.</p></div><label class="toggle" aria-label="Enable pointer tracking"><input id="trackingToggle" type="checkbox" disabled><span></span></label></div>
+          <div class="divider"></div>
+          <div class="metric-grid"><div class="metric"><div class="metric-label">FACE / EYE STATUS</div><div class="metric-value" id="faceMetric">Waiting</div></div><div class="metric"><div class="metric-label">BLINKS DETECTED</div><div class="metric-value" id="blinkMetric">0</div></div></div>
+          <div class="divider"></div>
+          <div class="section-label">Gesture mapping</div>
+          <div class="gesture-row"><div class="gesture-copy">1 blink · select<small>Single-click the item under the cursor</small></div><div class="select-wrap"><select id="singleAction" aria-label="Single blink action"><option value="left" selected>Left click</option><option value="right">Right click</option><option value="drag">Start/stop drag</option><option value="scroll-up">Scroll up</option><option value="scroll-down">Scroll down</option><option value="tab">Press Tab</option></select></div></div>
+          <div class="gesture-row"><div class="gesture-copy">2 blinks · open<small>Double-click This PC, a file, or a folder</small></div><div class="select-wrap"><select id="doubleAction" aria-label="Double blink action"><option value="double-left" selected>Open file/folder (double-click)</option><option value="tab">Press Tab</option><option value="next-tab">Press Ctrl+Tab</option><option value="right">Right click</option><option value="left">Left click</option><option value="pause">Pause tracking</option></select></div></div>
+          <div class="range-block"><div class="range-line"><span>Blink sensitivity</span><span id="blinkSensitivityValue">75%</span></div><input class="range" type="range" id="blinkSensitivity" min="45" max="78" step="1" value="75" aria-label="Blink sensitivity"><div class="hint">Raise sensitivity if deliberate blinks are missed. Lower it if ordinary eye movement triggers actions.</div></div>
+          <div class="range-block"><div class="range-line"><span>Pointer range</span><span id="rangeValue">5.0×</span></div><input class="range" type="range" id="rangeSlider" min="1.2" max="7.0" step="0.1" value="5.0" aria-label="Pointer range"><div class="hint">Increase range to reach desktop icons with smaller head movements.</div></div>
+          <div class="range-block"><div class="range-line"><span>Pointer smoothing</span><span id="smoothValue">15%</span></div><input class="range" type="range" id="smoothSlider" min="15" max="80" step="5" value="15" aria-label="Pointer smoothing"><div class="hint">Higher smoothing reduces jitter and makes movement steadier.</div></div>
+          <button class="secondary calibrate" id="calibrateButton" disabled><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6.5" stroke="currentColor" stroke-width="1.4"/><circle cx="10" cy="10" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M10 1v3m0 12v3M1 10h3m12 0h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Calibrate neutral position</button>
+        </article>
+        <article class="card help-card"><div class="section-label">Quick setup</div><div class="steps"><div class="step"><div class="step-num">1</div><div><strong>Connect your camera</strong><span>Allow access if Windows asks. Choose a camera if you have more than one.</span></div></div><div class="step"><div class="step-num">2</div><div><strong>Find a comfortable position</strong><span>Keep your face centered and evenly lit. Calibrate while looking straight ahead.</span></div></div><div class="step"><div class="step-num">3</div><div><strong>Start pointer tracking</strong><span>Move your head to guide the pointer. Blink once to click or twice to use your chosen action.</span></div></div></div><div class="privacy-note"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2.5 4 5v4.3c0 4 2.5 6.8 6 8.2 3.5-1.4 6-4.2 6-8.2V5l-6-2.5Z" stroke="currentColor" stroke-width="1.5"/><path d="m7.5 10 1.7 1.7 3.5-3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Camera frames and face landmarks are processed on this device. Only pointer coordinates and actions go to the local Go app. MediaPipe may send service usage metrics to Google.</span></div></article>
+        <p class="hint">Face detection runs on this device. MediaPipe may send service usage metrics to Google. <a href="https://developers.google.com/edge/mediapipe/solutions/tasks#mediapipe_tasks_privacy_notice" target="_blank" rel="noreferrer" style="color:#a8d6c9">Privacy notice</a></p>
+      </div>
+    </section>
+    <footer class="foot"><span>FacePointer · Local accessibility utility</span><span>Keyboard shortcut: Space to pause / resume tracking</span></footer>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    const $ = (id) => document.getElementById(id);
+    const video = $('video');
+    const modelURL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+    const visionURL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.1.1/vision_bundle.mjs';
+    const wasmURL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.1.1/wasm';
+    const state = {stream:null, landmarker:null, cameraReady:false, tracking:false, dragging:false, frameTimer:0, moveInFlight:false, pointerFrozen:false, miniMode:false, center:null, smoothed:null, lastMoveAt:0, lastBlinkAt:0, lastMouseClickAt:0, eyeClosedAt:null, pendingBlinks:0, blinkTimer:0, blinkCount:0, blinkLeft:null, blinkRight:null, openEARLeft:.16, openEARRight:.16, lastVideoTime:-1, fps:0, fpsFrames:0, fpsAt:performance.now(), status:null, actionQueue:Promise.resolve(), busy:false};
+    let toastTimer = 0;
+
+    function toast(message) { const el=$('toast'); el.textContent=message; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),2900); }
+    async function api(path, body) {
+      const backend=window.go?.main?.App;
+      if(!backend)throw new Error('The FacePointer desktop connection is unavailable. Restart the app.');
+      if(path==='/api/status')return backend.GetStatus();
+      if(path==='/api/move')return backend.Move(body.x,body.y);
+      if(path==='/api/action')return backend.Action(body.action);
+      throw new Error('Unsupported desktop action.');
+    }
+    function sendAction(action) {
+      const request=state.actionQueue.then(()=>api('/api/action',{action}));
+      state.actionQueue=request.catch(()=>{});
+      return request;
+    }
+    function setPill(text, mode='') { $('statusText').textContent=text; $('statusPill').className='status-pill '+mode; }
+    async function releaseDrag() {
+      if(!state.dragging)return;
+      state.dragging=false;
+      try { await sendAction('left-up'); }
+      catch (_) { toast('Could not release the held mouse button.'); }
+    }
+    async function toggleDrag() {
+      if(state.dragging){await sendAction('left-up');state.dragging=false;toast('Drag released.');return;}
+      await sendAction('left-down');
+      if(!state.tracking){await sendAction('left-up');return;}
+      state.dragging=true;toast('Mouse held. Move your face to drag; blink again to release.');
+    }
+    function setTracking(enabled) {
+      state.tracking=enabled;
+      if(!enabled){state.pointerFrozen=false;releaseDrag();}
+      $('trackingToggle').checked=enabled;
+      $('trackingButton').textContent=enabled?'Pause tracking':'Start tracking';
+      $('trackingTitle').textContent=enabled?'Pointer is active':'Tracking paused';
+      $('trackingDescription').textContent=enabled?'Move your head to guide the pointer. Look toward the center to return.':'Your camera stays connected. Start again whenever you’re ready.';
+      $('trackingOverlay').classList.toggle('show',!enabled);
+      if (enabled) { state.center=null; state.smoothed=null; state.lastMoveAt=0; state.lastMouseClickAt=0; }
+      setPill(enabled?'Tracking active':'Camera connected',enabled?'active':'ready');
+    }
+    async function loadLandmarker() {
+      if (state.landmarker) return state.landmarker;
+      $('cameraSub').textContent='Loading on-device face tracking model…';
+      try {
+        const {FaceLandmarker, FilesetResolver} = await import(visionURL);
+        const fileset = await FilesetResolver.forVisionTasks(wasmURL);
+        const options = {baseOptions:{modelAssetPath:modelURL,delegate:'GPU'},runningMode:'VIDEO',numFaces:1,minFaceDetectionConfidence:.55,minFacePresenceConfidence:.55,minTrackingConfidence:.55,outputFaceBlendshapes:true};
+        try { state.landmarker=await FaceLandmarker.createFromOptions(fileset,options); }
+        catch (_) { options.baseOptions.delegate='CPU'; state.landmarker=await FaceLandmarker.createFromOptions(fileset,options); }
+        return state.landmarker;
+      } catch (error) { throw new Error('Could not load face tracking. Check your internet connection, then reconnect the camera.'); }
+    }
+    async function connectCamera(deviceId='') {
+      if (state.busy) return;
+      state.busy=true; $('cameraButton').disabled=true; $('cameraButton').textContent='Connecting…';
+      try {
+        if (state.stream) stopCamera(false);
+        const constraints={audio:false,video:{...(deviceId?{deviceId:{exact:deviceId}}:{facingMode:'user'}),width:{ideal:640},height:{ideal:480},frameRate:{ideal:24,max:30}}};
+        state.stream=await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject=state.stream; await video.play();
+        await loadLandmarker();
+        state.cameraReady=true;
+        $('placeholder').hidden=true; video.classList.add('show'); $('liveTag').classList.add('show');
+        $('trackingButton').disabled=false; $('trackingToggle').disabled=false; $('calibrateButton').disabled=false;
+        $('cameraButton').textContent='Disconnect camera'; $('cameraButton').disabled=false;
+        $('cameraSub').textContent='Camera connected · video processed on this device';
+        setPill('Camera connected','ready'); await refreshCameras();
+        startLoop(); toast('Camera connected. Start tracking when ready.');
+      } catch (error) {
+        stopCamera(false);
+        $('cameraButton').textContent='Connect camera'; $('cameraButton').disabled=false;
+        $('cameraSub').textContent='Could not connect to the camera'; setPill('Camera unavailable');
+        toast(error.name==='NotAllowedError'?'Camera access was denied. Allow FacePointer in Windows camera privacy settings.':error.message||'Could not connect to this camera.');
+      } finally { state.busy=false; }
+    }
+    function stopCamera(showMessage=true) {
+      setTracking(false); state.cameraReady=false; cancelFrameLoop();
+      clearTimeout(state.blinkTimer); state.pendingBlinks=0; state.eyeClosedAt=null;
+      if (state.stream) for (const track of state.stream.getTracks()) track.stop();
+      state.stream=null; video.srcObject=null; video.classList.remove('show'); $('placeholder').hidden=false; $('liveTag').classList.remove('show'); $('trackingOverlay').classList.remove('show');
+      $('trackingButton').disabled=true; $('trackingToggle').disabled=true; $('calibrateButton').disabled=true; $('cameraSelect').hidden=true;
+      $('cameraButton').textContent='Connect camera'; $('cameraButton').disabled=false; $('cameraSub').textContent='Connect a camera to begin setup'; $('faceMetric').textContent='Waiting'; $('fpsLabel').textContent='— FPS';
+      setPill('Camera disconnected');
+      if (showMessage) toast('Camera disconnected.');
+    }
+    async function refreshCameras() {
+      const devices=await navigator.mediaDevices.enumerateDevices(); const cams=devices.filter(d=>d.kind==='videoinput'); const select=$('cameraSelect');
+      if(cams.length<2){select.hidden=true;return;}
+      const active=state.stream?.getVideoTracks()[0]?.getSettings().deviceId;
+      select.replaceChildren(...cams.map((cam,i)=>{const option=document.createElement('option');option.value=cam.deviceId;option.textContent=cam.label||`Camera ${i+1}`;option.selected=cam.deviceId===active;return option;}));select.hidden=false;
+    }
+    function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+    function ear(points, a,b,c,d,e,f){return (distance(points[a],points[b])+distance(points[c],points[d]))/(2*distance(points[e],points[f]));}
+    function queueBlink() {
+      const now=performance.now(); if(now-state.lastBlinkAt<140)return; state.lastBlinkAt=now; state.blinkCount++; $('blinkMetric').textContent=String(state.blinkCount);
+      if(!state.tracking)return;
+      state.pointerFrozen=true;
+      const systemInterval=state.status?.doubleClickTime||500;
+      const sequenceWindow=Math.max(600,systemInterval);
+      if($('singleAction').value==='left'&&$('doubleAction').value==='double-left'){
+        clearTimeout(state.blinkTimer);state.pendingBlinks=0;
+        const elapsed=now-state.lastMouseClickAt;
+        const isDouble=state.lastMouseClickAt>0&&elapsed<=sequenceWindow;
+        const action=isDouble&&elapsed>systemInterval?'double-left':'left';
+        state.lastMouseClickAt=now;
+        sendAction(action).then(()=>toast(isDouble?'Double-click sent.':'Click sent.')).catch(error=>{setTracking(false);toast(`Pointer action failed: ${error.message}`);}).finally(()=>{state.pointerFrozen=false;});
+        return;
+      }
+      state.lastMouseClickAt=0;
+      state.pendingBlinks++;
+      clearTimeout(state.blinkTimer);
+      state.blinkTimer=setTimeout(async()=>{
+        const count=state.pendingBlinks; state.pendingBlinks=0;
+        if(!state.tracking)return;
+        const action=count>=2?$('doubleAction').value:$('singleAction').value;
+        if(action==='pause'){setTracking(false);toast('Pointer tracking paused.');return;}
+        try {
+          if(action==='drag'){await toggleDrag();return;}
+          await sendAction(action);
+          if(action==='tab')toast('Tab sent to the active window.');
+          else if(action==='next-tab')toast('Ctrl+Tab sent to the active window.');
+          else if(action==='double-left')toast('Double-click sent. Keep the pointer over the file or folder.');
+          else if(action==='scroll-up')toast('Scrolled up.');
+          else if(action==='scroll-down')toast('Scrolled down.');
+        }
+        catch(error){setTracking(false);toast(`Pointer action failed: ${error.message}`);}
+        finally{state.pointerFrozen=false;}
+      },sequenceWindow);
+    }
+    function cancelFrameLoop(){clearTimeout(state.frameTimer);state.frameTimer=0;}
+    function scheduleFrame(){
+      if(!state.cameraReady||state.frameTimer)return;
+      state.frameTimer=setTimeout(()=>{state.frameTimer=0;handleFrame(performance.now());},33);
+    }
+    function handleFrame(now) {
+      if(!state.cameraReady||!state.landmarker)return;
+      if(video.readyState>=2 && video.currentTime!==state.lastVideoTime){
+        state.lastVideoTime=video.currentTime;
+        const result=state.landmarker.detectForVideo(video,now); const points=result.faceLandmarks?.[0];
+        if(points){
+          $('faceMetric').classList.add('good');
+          const sensitivity=Number($('blinkSensitivity').value);
+          const categories=result.faceBlendshapes?.[0]?.categories||[];
+          const leftBlend=categories.find(category=>category.categoryName==='eyeBlinkLeft')?.score;
+          const rightBlend=categories.find(category=>category.categoryName==='eyeBlinkRight')?.score;
+          let bothClosed,bothOpen;
+          if(Number.isFinite(leftBlend)&&Number.isFinite(rightBlend)){
+            state.blinkLeft=state.blinkLeft===null?leftBlend:state.blinkLeft*.35+leftBlend*.65;
+            state.blinkRight=state.blinkRight===null?rightBlend:state.blinkRight*.35+rightBlend*.65;
+            const closeThreshold=.82-((sensitivity-45)/33)*.34;
+            bothClosed=state.blinkLeft>closeThreshold&&state.blinkRight>closeThreshold;
+            bothOpen=state.blinkLeft<closeThreshold*.62&&state.blinkRight<closeThreshold*.62;
+          }else{
+            const left=ear(points,160,144,158,153,33,133), right=ear(points,385,380,387,373,362,263);
+            const closeRatio=.45+((sensitivity-45)/33)*.30, reopenRatio=Math.min(.9,closeRatio+.08);
+            bothClosed=left<state.openEARLeft*closeRatio&&right<state.openEARRight*closeRatio;
+            bothOpen=left>state.openEARLeft*reopenRatio&&right>state.openEARRight*reopenRatio;
+            if(state.eyeClosedAt===null&&left>state.openEARLeft*.7&&right>state.openEARRight*.7){
+              state.openEARLeft+=(left-state.openEARLeft)*.015;
+              state.openEARRight+=(right-state.openEARRight)*.015;
+            }
+          }
+          $('faceMetric').textContent=bothClosed?'Eyes closed':bothOpen?'Eyes open':'Eyes moving';
+          if(state.eyeClosedAt===null){
+            if(bothClosed)state.eyeClosedAt=now;
+          } else if(bothOpen){
+            const closedFor=now-state.eyeClosedAt;
+            if(closedFor>=55&&closedFor<=700)queueBlink();
+            state.eyeClosedAt=null;
+          }
+          if(state.tracking&&!state.pointerFrozen&&state.eyeClosedAt===null){
+            const rawX=(1-points[1].x), rawY=points[1].y;
+            if(!state.center)state.center={x:rawX,y:rawY};
+            const range=Number($('rangeSlider').value);
+            const target={x:clamp(.5+(rawX-state.center.x)*range,0,1),y:clamp(.5+(rawY-state.center.y)*range,0,1)};
+            const alpha=1-Number($('smoothSlider').value)/100;
+            if(!state.smoothed)state.smoothed=target;else {state.smoothed.x+=(target.x-state.smoothed.x)*alpha;state.smoothed.y+=(target.y-state.smoothed.y)*alpha;}
+            if(now-state.lastMoveAt>20&&!state.moveInFlight){
+              state.lastMoveAt=now;state.moveInFlight=true;
+              api('/api/move',state.smoothed).catch(error=>{setTracking(false);toast('Pointer control failed: '+error.message);}).finally(()=>{state.moveInFlight=false;});
+            }
+          }
+        } else { $('faceMetric').textContent='Face not found'; $('faceMetric').classList.remove('good'); state.eyeClosedAt=null; state.blinkLeft=null; state.blinkRight=null; }
+        state.fpsFrames++;
+        if(now-state.fpsAt>=1000){state.fps=Math.round(state.fpsFrames*1000/(now-state.fpsAt));$('fpsLabel').textContent=`${state.fps} FPS`;state.fpsFrames=0;state.fpsAt=now;}
+      }
+      scheduleFrame();
+    }
+    function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+    function startLoop(){cancelFrameLoop();state.lastVideoTime=-1;state.fpsFrames=0;state.fpsAt=performance.now();scheduleFrame();}
+
+    $('cameraButton').addEventListener('click',()=>state.cameraReady?stopCamera():connectCamera());
+    $('trackingButton').addEventListener('click',()=>{if(!state.cameraReady)return;setTracking(!state.tracking);});
+    $('trackingToggle').addEventListener('change',event=>{if(state.cameraReady)setTracking(event.target.checked);});
+    $('cameraSelect').addEventListener('change',event=>connectCamera(event.target.value));
+    $('miniModeButton').addEventListener('click',()=>{
+      state.miniMode=!state.miniMode;
+      document.body.classList.toggle('mini-mode',state.miniMode);
+      $('miniModeButton').textContent=state.miniMode?'Full controls':'Desktop mini mode';
+      $('miniModeButton').setAttribute('aria-pressed',String(state.miniMode));
+      const wails=window.runtime;
+      if(!wails){toast('Window controls are unavailable. Restart FacePointer.');return;}
+      const fullWidth=state.status?.windowWidth||1280, fullHeight=state.status?.windowHeight||800;
+      if(state.miniMode){
+        wails.WindowSetAlwaysOnTop(true);
+        const screenWidth=state.status?.screenWidth||1280, screenHeight=state.status?.screenHeight||800;
+        const width=Math.min(520,fullWidth,Math.max(1,screenWidth-40));
+        const height=Math.min(500,fullHeight,Math.max(1,screenHeight-76));
+        wails.WindowSetSize(width,height);
+        wails.WindowSetPosition(Math.max(0,screenWidth-width-20),Math.max(0,screenHeight-height-56));
+      }else{
+        wails.WindowSetAlwaysOnTop(false);
+        wails.WindowSetSize(fullWidth,fullHeight);
+        wails.WindowCenter();
+      }
+    });
+    $('calibrateButton').addEventListener('click',()=>{state.center=null;state.smoothed=null;toast('Neutral position set. Keep looking straight ahead.');});
+    $('rangeSlider').addEventListener('input',e=>$('rangeValue').textContent=`${Number(e.target.value).toFixed(1)}×`);
+    $('smoothSlider').addEventListener('input',e=>$('smoothValue').textContent=`${e.target.value}%`);
+    $('blinkSensitivity').addEventListener('input',e=>$('blinkSensitivityValue').textContent=`${e.target.value}%`);
+    document.addEventListener('keydown',event=>{if(event.code==='Space'&&!['SELECT','INPUT','BUTTON'].includes(document.activeElement.tagName)){event.preventDefault();if(state.cameraReady)setTracking(!state.tracking);}if(event.key==='Escape'&&state.tracking)setTracking(false);});
+    document.addEventListener('visibilitychange',()=>{if(state.cameraReady){cancelFrameLoop();scheduleFrame();}});
+    navigator.mediaDevices?.addEventListener?.('devicechange',()=>{if(state.cameraReady)refreshCameras();});
+    api('/api/status').then(status=>{state.status=status; $('cameraSub').textContent=`Windows pointer · ${status.screenWidth} × ${status.screenHeight} display`;}).catch(()=>{setPill('Controller unavailable');toast('The FacePointer desktop controller is unavailable. Restart the app.');});
+    if(!navigator.mediaDevices?.getUserMedia){$('cameraButton').disabled=true;toast('Update the Microsoft WebView2 Runtime to use your webcam.');}
+  </script>
+</body>
+</html>
