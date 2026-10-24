@@ -24,6 +24,7 @@ NethraMouse AI is a hands-free desktop control project. Its Windows desktop app,
 The first camera connection downloads MediaPipe's face-tracking runtime and model from Google's and jsDelivr's public CDNs. Face frames and landmarks are processed on your device. MediaPipe may send service usage metrics to Google; see its [privacy notice](https://developers.google.com/edge/mediapipe/solutions/tasks#mediapipe_tasks_privacy_notice).
 
 See [the tracking algorithm](docs/ALGORITHM.md) for details on cursor movement, blink detection, and smoothing.
+If setup or Windows security blocks the app, see [troubleshooting](docs/TROUBLESHOOTING.md).
 
 ## Gestures
 
