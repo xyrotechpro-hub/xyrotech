@@ -1,6 +1,6 @@
-# FacePointer
+# NethraMouse AI
 
-FacePointer is a Go-based Windows desktop app for hands-free pointer control. It opens in its own native application window; it does not launch a browser tab. The camera preview has no face or nose marker.
+NethraMouse AI is a hands-free desktop control project. Its Windows desktop app, FacePointer, uses head movement to guide the normal system cursor and blink gestures for mouse actions. It opens in its own native application window; it does not launch a browser tab.
 
 ## Requirements
 
