@@ -23,6 +23,8 @@ FacePointer is a Go-based Windows desktop app for hands-free pointer control. It
 
 The first camera connection downloads MediaPipe's face-tracking runtime and model from Google's and jsDelivr's public CDNs. Face frames and landmarks are processed on your device. MediaPipe may send service usage metrics to Google; see its [privacy notice](https://developers.google.com/edge/mediapipe/solutions/tasks#mediapipe_tasks_privacy_notice).
 
+See [the tracking algorithm](docs/ALGORITHM.md) for details on cursor movement, blink detection, and smoothing.
+
 ## Gestures
 
 - Move your head to move the normal Windows pointer; the physical mouse remains usable too. Use **Calibrate neutral position** while facing forward to reset the center.
