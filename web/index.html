@@ -80,6 +80,7 @@
     const visionURL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.1.1/vision_bundle.mjs';
     const wasmURL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.1.1/wasm';
     const state = {stream:null, landmarker:null, cameraReady:false, tracking:false, dragging:false, frameTimer:0, moveInFlight:false, pointerFrozen:false, miniMode:false, center:null, smoothed:null, lastMoveAt:0, lastBlinkAt:0, lastMouseClickAt:0, eyeClosedAt:null, pendingBlinks:0, blinkTimer:0, blinkCount:0, blinkLeft:null, blinkRight:null, openEARLeft:.16, openEARRight:.16, lastVideoTime:-1, fps:0, fpsFrames:0, fpsAt:performance.now(), status:null, actionQueue:Promise.resolve(), busy:false};
+    const preferenceIds=['singleAction','doubleAction','blinkSensitivity','rangeSlider','smoothSlider'];
     let toastTimer = 0;
 
     function toast(message) { const el=$('toast'); el.textContent=message; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),2900); }
@@ -95,6 +96,28 @@
       const request=state.actionQueue.then(()=>api('/api/action',{action}));
       state.actionQueue=request.catch(()=>{});
       return request;
+    }
+    function restorePreferences() {
+      try {
+        const saved=JSON.parse(localStorage.getItem('facepointer.preferences.v1')||'{}');
+        for(const id of preferenceIds){
+          const control=$(id), value=saved[id];
+          if(typeof value!=='string'&&typeof value!=='number')continue;
+          if(control.tagName==='SELECT'){
+            if([...control.options].some(option=>option.value===String(value)))control.value=String(value);
+          }else if(Number.isFinite(Number(value))&&Number(value)>=Number(control.min)&&Number(value)<=Number(control.max))control.value=String(value);
+        }
+      }catch(_){ }
+      $('rangeValue').textContent=`${Number($('rangeSlider').value).toFixed(1)}×`;
+      $('smoothValue').textContent=`${$('smoothSlider').value}%`;
+      $('blinkSensitivityValue').textContent=`${$('blinkSensitivity').value}%`;
+    }
+    function savePreferences() {
+      try {
+        const saved={};
+        for(const id of preferenceIds)saved[id]=$(id).value;
+        localStorage.setItem('facepointer.preferences.v1',JSON.stringify(saved));
+      }catch(_){toast('Could not save settings in this WebView.');}
     }
     function setPill(text, mode='') { $('statusText').textContent=text; $('statusPill').className='status-pill '+mode; }
     async function releaseDrag() {
@@ -297,6 +320,8 @@
       }
     });
     $('calibrateButton').addEventListener('click',()=>{state.center=null;state.smoothed=null;toast('Neutral position set. Keep looking straight ahead.');});
+    restorePreferences();
+    for(const id of ['singleAction','doubleAction','blinkSensitivity','rangeSlider','smoothSlider'])$(id).addEventListener('change',savePreferences);
     $('rangeSlider').addEventListener('input',e=>$('rangeValue').textContent=`${Number(e.target.value).toFixed(1)}×`);
     $('smoothSlider').addEventListener('input',e=>$('smoothValue').textContent=`${e.target.value}%`);
     $('blinkSensitivity').addEventListener('input',e=>$('blinkSensitivityValue').textContent=`${e.target.value}%`);
