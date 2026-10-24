@@ -363,6 +363,12 @@
     $('deadZoneSlider').addEventListener('input',e=>$('deadZoneValue').textContent=Number(e.target.value).toFixed(3));
     document.addEventListener('keydown',event=>{if(event.code==='Space'&&!['SELECT','INPUT','BUTTON'].includes(document.activeElement.tagName)){event.preventDefault();if(state.cameraReady)setTracking(!state.tracking);}if(event.key==='Escape'&&state.tracking)setTracking(false);});
     document.addEventListener('visibilitychange',()=>{if(state.cameraReady){cancelFrameLoop();scheduleFrame();}});
+    window.addEventListener('pagehide',()=>{
+      cancelFrameLoop();
+      if(state.stream)for(const track of state.stream.getTracks())track.stop();
+      state.stream=null;state.cameraReady=false;state.tracking=false;
+      if(state.dragging){state.dragging=false;sendAction('left-up').catch(()=>{});}
+    });
     navigator.mediaDevices?.addEventListener?.('devicechange',()=>{if(state.cameraReady)refreshCameras();});
     api('/api/status').then(status=>{state.status=status; $('cameraSub').textContent=`Windows pointer · ${status.screenWidth} × ${status.screenHeight} display`;}).catch(()=>{setPill('Controller unavailable');toast('The FacePointer desktop controller is unavailable. Restart the app.');});
     if(!navigator.mediaDevices?.getUserMedia){$('cameraButton').disabled=true;toast('Update the Microsoft WebView2 Runtime to use your webcam.');}
