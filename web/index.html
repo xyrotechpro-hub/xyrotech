@@ -62,6 +62,7 @@
           <div class="gesture-row"><div class="gesture-copy">2 blinks · open<small>Double-click This PC, a file, or a folder</small></div><div class="select-wrap"><select id="doubleAction" aria-label="Double blink action"><option value="double-left" selected>Open file/folder (double-click)</option><option value="tab">Press Tab</option><option value="next-tab">Press Ctrl+Tab</option><option value="right">Right click</option><option value="left">Left click</option><option value="pause">Pause tracking</option></select></div></div>
           <div class="range-block"><div class="range-line"><span>Blink sensitivity</span><span id="blinkSensitivityValue">75%</span></div><input class="range" type="range" id="blinkSensitivity" min="45" max="78" step="1" value="75" aria-label="Blink sensitivity"><div class="hint">Raise sensitivity if deliberate blinks are missed. Lower it if ordinary eye movement triggers actions.</div></div>
           <div class="range-block"><div class="range-line"><span>Pointer range</span><span id="rangeValue">5.0×</span></div><input class="range" type="range" id="rangeSlider" min="1.2" max="7.0" step="0.1" value="5.0" aria-label="Pointer range"><div class="hint">Increase range to reach desktop icons with smaller head movements.</div></div>
+          <div class="range-block"><div class="range-line"><span>Neutral movement deadzone</span><span id="deadZoneValue">0.005</span></div><input class="range" type="range" id="deadZoneSlider" min="0" max="0.03" step="0.001" value="0.005" aria-label="Neutral movement deadzone"><div class="hint">Increase slightly if tiny head movement makes the cursor drift.</div></div>
           <div class="range-block"><div class="range-line"><span>Pointer smoothing</span><span id="smoothValue">15%</span></div><input class="range" type="range" id="smoothSlider" min="15" max="80" step="5" value="15" aria-label="Pointer smoothing"><div class="hint">Higher smoothing reduces jitter and makes movement steadier.</div></div>
           <button class="secondary calibrate" id="calibrateButton" disabled><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6.5" stroke="currentColor" stroke-width="1.4"/><circle cx="10" cy="10" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M10 1v3m0 12v3M1 10h3m12 0h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Calibrate neutral position</button>
           <button class="secondary" id="resetPreferencesButton" style="width:100%;margin-top:9px">Restore default controls</button>
@@ -81,7 +82,7 @@
     const visionURL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.1.1/vision_bundle.mjs';
     const wasmURL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.1.1/wasm';
     const state = {stream:null, landmarker:null, cameraReady:false, tracking:false, dragging:false, frameTimer:0, moveInFlight:false, pointerFrozen:false, miniMode:false, center:null, smoothed:null, lastMoveAt:0, lastBlinkAt:0, lastMouseClickAt:0, eyeClosedAt:null, pendingBlinks:0, blinkTimer:0, blinkCount:0, blinkLeft:null, blinkRight:null, openEARLeft:.16, openEARRight:.16, lastVideoTime:-1, fps:0, fpsFrames:0, fpsAt:performance.now(), status:null, actionQueue:Promise.resolve(), busy:false};
-    const preferenceIds=['singleAction','doubleAction','blinkSensitivity','rangeSlider','smoothSlider'];
+    const preferenceIds=['singleAction','doubleAction','blinkSensitivity','rangeSlider','smoothSlider','deadZoneSlider'];
     let toastTimer = 0;
 
     function toast(message) { const el=$('toast'); el.textContent=message; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),2900); }
@@ -112,6 +113,7 @@
       $('rangeValue').textContent=`${Number($('rangeSlider').value).toFixed(1)}×`;
       $('smoothValue').textContent=`${$('smoothSlider').value}%`;
       $('blinkSensitivityValue').textContent=`${$('blinkSensitivity').value}%`;
+      $('deadZoneValue').textContent=Number($('deadZoneSlider').value).toFixed(3);
     }
     function savePreferences() {
       try {
@@ -204,6 +206,11 @@
       select.replaceChildren(...cams.map((cam,i)=>{const option=document.createElement('option');option.value=cam.deviceId;option.textContent=cam.label||`Camera ${i+1}`;option.selected=cam.deviceId===active;return option;}));select.hidden=false;
     }
     function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+    function removeDeadZone(offset,threshold){
+      const magnitude=Math.abs(offset);
+      if(magnitude<=threshold)return 0;
+      return Math.sign(offset)*(magnitude-threshold)/(1-threshold);
+    }
     function ear(points, a,b,c,d,e,f){return (distance(points[a],points[b])+distance(points[c],points[d]))/(2*distance(points[e],points[f]));}
     function queueBlink() {
       const now=performance.now(); if(now-state.lastBlinkAt<140)return; state.lastBlinkAt=now; state.blinkCount++; $('blinkMetric').textContent=String(state.blinkCount);
@@ -285,8 +292,9 @@
           if(state.tracking&&!state.pointerFrozen&&state.eyeClosedAt===null){
             const rawX=(1-points[1].x), rawY=points[1].y;
             if(!state.center)state.center={x:rawX,y:rawY};
-            const range=Number($('rangeSlider').value);
-            const target={x:clamp(.5+(rawX-state.center.x)*range,0,1),y:clamp(.5+(rawY-state.center.y)*range,0,1)};
+            const range=Number($('rangeSlider').value), deadZone=Number($('deadZoneSlider').value);
+            const offsetX=removeDeadZone(rawX-state.center.x,deadZone), offsetY=removeDeadZone(rawY-state.center.y,deadZone);
+            const target={x:clamp(.5+offsetX*range,0,1),y:clamp(.5+offsetY*range,0,1)};
             const alpha=1-Number($('smoothSlider').value)/100;
             if(!state.smoothed)state.smoothed=target;else {state.smoothed.x+=(target.x-state.smoothed.x)*alpha;state.smoothed.y+=(target.y-state.smoothed.y)*alpha;}
             if(now-state.lastMoveAt>20&&!state.moveInFlight){
@@ -330,18 +338,20 @@
     });
     $('calibrateButton').addEventListener('click',()=>{state.center=null;state.smoothed=null;toast('Neutral position set. Keep looking straight ahead.');});
     restorePreferences();
-    for(const id of ['singleAction','doubleAction','blinkSensitivity','rangeSlider','smoothSlider'])$(id).addEventListener('change',savePreferences);
+    for(const id of preferenceIds)$(id).addEventListener('change',savePreferences);
     $('resetPreferencesButton').addEventListener('click',()=>{
-      for(const [id,value] of Object.entries({singleAction:'left',doubleAction:'double-left',blinkSensitivity:'75',rangeSlider:'5',smoothSlider:'15'}))$(id).value=value;
+      for(const [id,value] of Object.entries({singleAction:'left',doubleAction:'double-left',blinkSensitivity:'75',rangeSlider:'5',smoothSlider:'15',deadZoneSlider:'0.005'}))$(id).value=value;
       try{localStorage.removeItem('facepointer.preferences.v1');}catch(_){ }
       $('rangeValue').textContent=`${Number($('rangeSlider').value).toFixed(1)}×`;
       $('smoothValue').textContent=`${$('smoothSlider').value}%`;
       $('blinkSensitivityValue').textContent=`${$('blinkSensitivity').value}%`;
+      $('deadZoneValue').textContent=Number($('deadZoneSlider').value).toFixed(3);
       toast('Default controls restored.');
     });
     $('rangeSlider').addEventListener('input',e=>$('rangeValue').textContent=`${Number(e.target.value).toFixed(1)}×`);
     $('smoothSlider').addEventListener('input',e=>$('smoothValue').textContent=`${e.target.value}%`);
     $('blinkSensitivity').addEventListener('input',e=>$('blinkSensitivityValue').textContent=`${e.target.value}%`);
+    $('deadZoneSlider').addEventListener('input',e=>$('deadZoneValue').textContent=Number(e.target.value).toFixed(3));
     document.addEventListener('keydown',event=>{if(event.code==='Space'&&!['SELECT','INPUT','BUTTON'].includes(document.activeElement.tagName)){event.preventDefault();if(state.cameraReady)setTracking(!state.tracking);}if(event.key==='Escape'&&state.tracking)setTracking(false);});
     document.addEventListener('visibilitychange',()=>{if(state.cameraReady){cancelFrameLoop();scheduleFrame();}});
     navigator.mediaDevices?.addEventListener?.('devicechange',()=>{if(state.cameraReady)refreshCameras();});

@@ -5,7 +5,7 @@ FacePointer uses MediaPipe FaceLandmarker in the WebView to locate one face in e
 ## Cursor movement
 
 1. The user looks straight ahead and calibrates. The nose landmark becomes the neutral reference point.
-2. Each frame compares the current nose position with that reference. The horizontal coordinate is mirrored to match the preview; both axes are scaled by the pointer-range setting and clamped to the screen.
+2. Each frame compares the current nose position with that reference. The horizontal coordinate is mirrored to match the preview. Small offsets inside the configurable deadzone are ignored; remaining offsets are scaled by the pointer-range setting and clamped to the screen.
 3. An exponential moving average smooths the target. Its update factor is `1 - smoothing / 100`, so lower smoothing values react faster.
 4. The Go controller converts normalized coordinates to Windows screen coordinates and calls `SetCursorPos`.
 
