@@ -35,6 +35,7 @@ See [the tracking algorithm](docs/ALGORITHM.md) for details on cursor movement, 
 - Gesture choices, blink sensitivity, pointer range, and smoothing are saved locally for the next launch.
 - Use **Neutral movement deadzone** to ignore tiny involuntary head movements near the calibrated center.
 - The most recently selected camera is remembered when its device is still available.
+- If face inference stops unexpectedly, the app releases the camera and asks you to reconnect it.
 - Select **Restore default controls** to clear saved settings and return to the default click and pointer values.
 - Use **Desktop mini mode** to keep a small tracking window in a screen corner while working with other desktop apps. Keep this mini window visible instead of minimizing it so camera tracking continues. The frame loop uses a timer so it does not depend on visible-window animation frames.
 - Press **Space** to pause or resume tracking, or **Escape** to pause.

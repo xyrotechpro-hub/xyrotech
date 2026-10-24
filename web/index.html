@@ -257,7 +257,16 @@
       if(!state.cameraReady||!state.landmarker)return;
       if(video.readyState>=2 && video.currentTime!==state.lastVideoTime){
         state.lastVideoTime=video.currentTime;
-        const result=state.landmarker.detectForVideo(video,now); const points=result.faceLandmarks?.[0];
+        let result;
+        try { result=state.landmarker.detectForVideo(video,now); }
+        catch(_){
+          state.landmarker=null;
+          stopCamera(false);
+          $('cameraSub').textContent='Face tracking stopped after an inference error';
+          toast('Face tracking stopped. Reconnect the camera to try again.');
+          return;
+        }
+        const points=result.faceLandmarks?.[0];
         if(points){
           $('faceMetric').classList.add('good');
           const sensitivity=Number($('blinkSensitivity').value);
