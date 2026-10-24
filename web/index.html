@@ -161,11 +161,19 @@
       state.busy=true; $('cameraButton').disabled=true; $('cameraButton').textContent='Connecting…';
       try {
         if (state.stream) stopCamera(false);
-        const constraints={audio:false,video:{...(deviceId?{deviceId:{exact:deviceId}}:{facingMode:'user'}),width:{ideal:640},height:{ideal:480},frameRate:{ideal:24,max:30}}};
-        state.stream=await navigator.mediaDevices.getUserMedia(constraints);
+        let preferredDevice=deviceId;
+        try { if(!preferredDevice)preferredDevice=localStorage.getItem('facepointer.cameraId')||''; } catch(_){ }
+        const constraintsFor=id=>({audio:false,video:{...(id?{deviceId:{exact:id}}:{facingMode:'user'}),width:{ideal:640},height:{ideal:480},frameRate:{ideal:24,max:30}}});
+        try { state.stream=await navigator.mediaDevices.getUserMedia(constraintsFor(preferredDevice)); }
+        catch(error){
+          if(!preferredDevice||!['OverconstrainedError','NotFoundError'].includes(error.name))throw error;
+          try{localStorage.removeItem('facepointer.cameraId');}catch(_){ }
+          state.stream=await navigator.mediaDevices.getUserMedia(constraintsFor(''));
+        }
         video.srcObject=state.stream; await video.play();
         await loadLandmarker();
         state.cameraReady=true;
+        try { localStorage.setItem('facepointer.cameraId',state.stream.getVideoTracks()[0]?.getSettings().deviceId||''); } catch(_){ }
         $('placeholder').hidden=true; video.classList.add('show'); $('liveTag').classList.add('show');
         $('trackingButton').disabled=false; $('trackingToggle').disabled=false; $('calibrateButton').disabled=false;
         $('cameraButton').textContent='Disconnect camera'; $('cameraButton').disabled=false;
